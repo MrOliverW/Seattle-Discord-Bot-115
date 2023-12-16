@@ -1,17 +1,18 @@
-#imports multiple libraries and the private token located in the .env file
+#imports multiple libraries; The private token located in the .env file and EC2 metadata
 import discord 
 import os 
 import random 
-from dotenv import load_dotenv 
+from ec2_metadata import ec2_metadata 
 
-#Loads the private token data located in the .env file  
-load_dotenv()
+#prints EC2 metadata
+print(ec2_metadata.region)
+print(ec2_metadata.instance_id)
 
 #Uses the discord library to create an instance of the bot class which can be called upon
 client = discord.Bot() 
 
 #uses the os library to retrieve the bot's private token enabling connection to Discord servers
-token = os.getenv('token')
+token = str(os.getenv('TOKEN'))
 
 #Creates an event that prints a message to indicate when the bot is logged in and ready.
 @client.event 
@@ -38,12 +39,12 @@ async def on_message(message):
 
 #If the user types "hello" or "hi" in the random server with bot active it will respond accordingly.
 		if user_message.lower() == "hello" or user_message.lower() == "hi": 
-			await message.channel.send(f'Hello {username}') 
+			await message.channel.send(f'Hello {username} Your EC2 Data: {ec2_metadata.region}') 
 			return
 		
 #If the user types "bye" or "goodbye" in the random server with bot active it will respond in-kind.
 		elif user_message.lower() == "bye" or user_message.lower() == "goodbye": 
-			await message.channel.send(f'Bye {username} - be well!') 
+			await message.channel.send(f'Bye {username} - be well!  Your EC2 Data: {ec2_metadata.region}') 
 
 #If the user types "tell me a joke" in the random server with bot active it will respond with a joke.
 		elif user_message.lower() == "tell me a joke" or user_message.lower() == "got any jokes?": 
@@ -59,7 +60,9 @@ async def on_message(message):
 
 #This silly else if statement will trigger the user types "ayyyy" whilst the bot is active
 		elif user_message.lower() == "ayyyy":
-			await message.channel.send(f'AYYYYYYYYYYyyyyy {username}')
+			await message.channel.send(f'AYYYYYYYYYYyyyyy {username} Your EC2 Data: {ec2_metadata.region}')
 
 #Establishes the connection between the bot and the Discord API via token authentication.
 client.run(token)
+
+
